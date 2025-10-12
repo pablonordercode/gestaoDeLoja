@@ -92,7 +92,7 @@ export default function Navbar() {
         <li>
           <button 
             onClick={() => navigate("/gestao")} 
-            className={`hover:text-blue-400 transition ${
+            className={`hover:text-blue-401 transition ${
               isActive("/gestao") ? "text-blue-400 font-semibold" : "text-white"
             }`}
           >

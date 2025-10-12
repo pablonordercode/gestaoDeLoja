@@ -297,7 +297,7 @@ exports.loginColaborador = asyncHandler(async (req, res) => {
   // 5️⃣ Retornar dados do colaborador logado
   res.status(200).json({
     success: true,
-    msg: "Login realizado com sucesso",
+    msg: "Login realizado com sucessoo",
     data: {
       id: colaborador._id,
       nome: colaborador.nome,
