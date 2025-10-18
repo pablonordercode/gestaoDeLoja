@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { AppError } = require("../utils/error");
 const { validarEmail, validarSenha, validarObjectId } = require("../utils/validators");
+const { generateTokens, generateAccessToken, verifyToken, calculateExpiryDate } = require("../utils/tokenUtils");
 
 class ColaboradorService {
     /**
@@ -236,20 +237,19 @@ class ColaboradorService {
             throw new AppError("Colaborador inativo. Contate o administrador.", 403);
         }
 
-        // Gerar token JWT
-        if (!process.env.JWT_SECRET) {
-            throw new AppError("JWT_SECRET não configurado", 500);
-        }
+        // Gerar tokens (access e refresh)
+        const { accessToken, refreshToken } = generateTokens(colaborador);
 
-        const token = jwt.sign(
-            { 
-                id: colaborador._id, 
-                email: colaborador.email,
-                cargo: colaborador.cargo 
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: "7d" }
+        // Calcular data de expiração do refresh token
+        const refreshTokenExpiry = calculateExpiryDate(
+            process.env.JWT_REFRESH_EXP || "7d"
         );
+
+        // Salvar refresh token no banco de dados
+        await colaboradorRepository.update(colaborador._id, {
+            refreshToken,
+            refreshTokenExpiry
+        });
 
         // Retornar dados
         return {
@@ -258,7 +258,100 @@ class ColaboradorService {
             email: colaborador.email,
             imagem: colaborador.imagem,
             cargo: colaborador.cargo,
-            token
+            accessToken,
+            refreshToken
+        };
+    }
+
+    /**
+     * Renova o access token usando o refresh token
+     */
+    async refreshToken(refreshToken) {
+        if (!refreshToken) {
+            throw new AppError("Refresh token não fornecido", 400);
+        }
+
+        try {
+            // Verificar e decodificar o refresh token
+            const decoded = verifyToken(refreshToken);
+
+            // Verificar se é um refresh token
+            if (decoded.type !== "refresh") {
+                throw new AppError("Token inválido", 401);
+            }
+
+            // Buscar colaborador no banco
+            const colaborador = await colaboradorRepository.findById(decoded.id);
+            if (!colaborador) {
+                throw new AppError("Colaborador não encontrado", 404);
+            }
+
+            // Verificar se o refresh token corresponde ao salvo no banco
+            if (colaborador.refreshToken !== refreshToken) {
+                throw new AppError("Refresh token inválido", 401);
+            }
+
+            // Verificar se o refresh token expirou no banco
+            if (colaborador.refreshTokenExpiry && new Date() > colaborador.refreshTokenExpiry) {
+                throw new AppError("Refresh token expirado. Faça login novamente.", 401);
+            }
+
+            // Verificar se está ativo
+            if (!colaborador.ativo) {
+                throw new AppError("Colaborador inativo. Contate o administrador.", 403);
+            }
+
+            // Gerar novos tokens
+            const { accessToken, refreshToken: newRefreshToken } = generateTokens(colaborador);
+
+            // Calcular nova data de expiração do refresh token
+            const refreshTokenExpiry = calculateExpiryDate(
+                process.env.JWT_REFRESH_EXP || "7d"
+            );
+
+            // Atualizar refresh token no banco
+            await colaboradorRepository.update(colaborador._id, {
+                refreshToken: newRefreshToken,
+                refreshTokenExpiry
+            });
+
+            // Retornar novos tokens
+            return {
+                accessToken,
+                refreshToken: newRefreshToken
+            };
+        } catch (error) {
+            if (error.name === "JsonWebTokenError") {
+                throw new AppError("Token inválido", 401);
+            }
+            if (error.name === "TokenExpiredError") {
+                throw new AppError("Refresh token expirado. Faça login novamente.", 401);
+            }
+            throw error;
+        }
+    }
+
+    /**
+     * Logout - revoga o refresh token
+     */
+    async logout(userId) {
+        if (!validarObjectId(userId)) {
+            throw new AppError('ID do colaborador inválido', 400);
+        }
+
+        const colaborador = await colaboradorRepository.findById(userId);
+        if (!colaborador) {
+            throw new AppError('Colaborador não encontrado', 404);
+        }
+
+        // Remover refresh token do banco
+        await colaboradorRepository.update(userId, {
+            refreshToken: null,
+            refreshTokenExpiry: null
+        });
+
+        return {
+            msg: "Logout realizado com sucesso"
         };
     }
 

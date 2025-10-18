@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
+import api from "../services/api"
 
 export default function Navbar() {
   const [usuario, setUsuario] = useState(null)
@@ -27,11 +28,20 @@ export default function Navbar() {
     return () => window.removeEventListener('storage', updateUsuario)
   }, [])
 
-  const handleLogout = () => {
-    localStorage.removeItem("usuario")
-    localStorage.removeItem("token")
-    setUsuario(null)
-    navigate("/login")
+  const handleLogout = async () => {
+    try {
+      // Chamar rota de logout no backend para revogar refresh token
+      await api.post("/colaborador/logout")
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error)
+    } finally {
+      // Limpar storage independente do resultado
+      localStorage.removeItem("usuario")
+      localStorage.removeItem("accessToken")
+      localStorage.removeItem("refreshToken")
+      setUsuario(null)
+      navigate("/login")
+    }
   }
 
   // Função para atualizar o usuário (pode ser chamada de outros componentes)

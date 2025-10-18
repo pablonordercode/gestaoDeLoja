@@ -23,11 +23,12 @@ export default function Login() {
         password,
       })
 
-      const { token, nome, email: userEmail, id, imagem, cargo } = res.data.data
+      const { accessToken, refreshToken, nome, email: userEmail, id, imagem, cargo } = res.data.data
 
       // Armazenar dados no localStorage (mesmo formato do registro)
       localStorage.setItem("usuario", JSON.stringify({ id, nome, email: userEmail, imagem, cargo }))
-      localStorage.setItem("token", token)
+      localStorage.setItem("accessToken", accessToken)
+      localStorage.setItem("refreshToken", refreshToken)
 
       // Forçar atualização do Navbar
       window.dispatchEvent(new Event('storage'))

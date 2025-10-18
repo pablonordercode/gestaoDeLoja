@@ -6,7 +6,9 @@ const colaboradorSchema = new mongoose.Schema({
   password: { type: String, required: true, minlength: 6 },
   imagem: { type: String }, // link do Cloudinary ou path local
   ativo: { type: Boolean, default: true },
-  cargo: { type: String, default: "Colaborador" }
+  cargo: { type: String, default: "Colaborador" },
+  refreshToken: { type: String }, // Token de atualização
+  refreshTokenExpiry: { type: Date } // Data de expiração do refresh token
 }, { timestamps: true });  
 
 module.exports = mongoose.model("UsuarioColaborador", colaboradorSchema);

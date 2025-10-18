@@ -81,3 +81,31 @@ exports.loginColaborador = asyncHandler(async (req, res) => {
         data: resultado
     });
 });
+
+/**
+ * Controller para renovar access token usando refresh token
+ */
+exports.refreshToken = asyncHandler(async (req, res) => {
+    const { refreshToken } = req.body;
+    const resultado = await colaboradorService.refreshToken(refreshToken);
+
+    res.status(200).json({
+        success: true,
+        msg: "Tokens renovados com sucesso",
+        data: resultado
+    });
+});
+
+/**
+ * Controller para logout (revoga refresh token)
+ */
+exports.logoutColaborador = asyncHandler(async (req, res) => {
+    // O ID do usuário vem do middleware de autenticação
+    const userId = req.usuario.id;
+    const resultado = await colaboradorService.logout(userId);
+
+    res.status(200).json({
+        success: true,
+        msg: resultado.msg
+    });
+});

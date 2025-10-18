@@ -1,4 +1,13 @@
-import axios from "axios"
+/**
+ * EXEMPLO DE IMPLEMENTAÇÃO: Sistema de Refresh Token no Frontend
+ * 
+ * Este arquivo mostra como atualizar o frontend/src/services/api.js
+ * para trabalhar com o novo sistema de Access Token e Refresh Token
+ * 
+ * IMPORTANTE: Substitua o conteúdo de frontend/src/services/api.js por este código
+ */
+
+import axios from "axios";
 
 const api = axios.create({
   baseURL: "http://localhost:7001",
@@ -142,3 +151,4 @@ api.interceptors.response.use(
 );
 
 export default api;
+

@@ -28,26 +28,38 @@ const verificarAuth = (req, res, next) => {
     // 4️⃣ Verificar e decodificar o token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // 5️⃣ Adicionar informações do usuário à requisição
+    // 5️⃣ Verificar se é um access token (não um refresh token)
+    if (decoded.type === "refresh") {
+      return res.status(401).json({
+        success: false,
+        msg: "Token inválido. Use o access token para acessar recursos protegidos.",
+        error: "INVALID_TOKEN_TYPE"
+      });
+    }
+
+    // 6️⃣ Adicionar informações do usuário à requisição
     req.usuario = {
       id: decoded.id,
       email: decoded.email,
+      cargo: decoded.cargo
     };
 
-    // 6️⃣ Continuar para a próxima função
+    // 7️⃣ Continuar para a próxima função
     next();
   } catch (error) {
     if (error.name === "JsonWebTokenError") {
       return res.status(401).json({
         success: false,
         msg: "Token inválido",
+        error: "INVALID_TOKEN"
       });
     }
 
     if (error.name === "TokenExpiredError") {
       return res.status(401).json({
         success: false,
-        msg: "Token expirado. Faça login novamente.",
+        msg: "Access token expirado. Use o refresh token para renovar.",
+        error: "TOKEN_EXPIRED"
       });
     }
 
@@ -55,6 +67,7 @@ const verificarAuth = (req, res, next) => {
     return res.status(error.statusCode || 500).json({
       success: false,
       msg: error.message || "Erro ao verificar autenticação",
+      error: "AUTH_ERROR"
     });
   }
 };
