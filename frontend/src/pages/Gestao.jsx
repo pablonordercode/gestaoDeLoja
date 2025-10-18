@@ -76,7 +76,7 @@ export default function Gestao() {
 
   const carregarProdutos = async () => {
     try {
-      const res = await api.get("/produtos/todosProdutos")
+      const res = await api.get("/api/produtos/todosProdutos")
       setProdutos(res.data.data || [])
     } catch (error) {
       console.error("Erro ao carregar produtos:", error)
@@ -91,7 +91,7 @@ export default function Gestao() {
   const carregarColaboradores = async () => {
     try {
       console.log("Carregando colaboradores...")
-      const res = await api.get("/colaborador/todosColaboradores")
+      const res = await api.get("/api/colaborador/todosColaboradores")
       console.log("Resposta completa da API:", res)
       console.log("Dados da resposta:", res.data)
       
@@ -160,7 +160,7 @@ export default function Gestao() {
         formData.append("imagem", formColaborador.imagem)
       }
 
-      await api.put(`/colaborador/editarColaborador/${colaboradorEditando._id}`, formData, {
+      await api.put(`/api/colaborador/editarColaborador/${colaboradorEditando._id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" }
       })
       
@@ -181,7 +181,7 @@ export default function Gestao() {
   const confirmarExclusao = async () => {
     if (colaboradorParaExcluir) {
       try {
-        await api.delete(`/colaborador/deletarColaborador/${colaboradorParaExcluir._id}`)
+        await api.delete(`/api/colaborador/deletarColaborador/${colaboradorParaExcluir._id}`)
         showSuccess("Colaborador excluído com sucesso!")
         carregarColaboradores()
       } catch (error) {
@@ -197,7 +197,7 @@ export default function Gestao() {
     const confirmado = confirm("Tem certeza que deseja excluir este produto?")
     if (confirmado) {
       try {
-        await api.delete(`/produtos/deletarProduto/${id}`)
+        await api.delete(`/api/produtos/deletarProduto/${id}`)
         showSuccess("Produto excluído com sucesso!")
         carregarProdutos() // Recarregar lista de produtos
       } catch (error) {

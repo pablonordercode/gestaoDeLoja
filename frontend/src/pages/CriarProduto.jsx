@@ -35,7 +35,7 @@ export default function CriarProduto() {
         data.append(key, formData[key])
       })
 
-      await api.post("/produtos/addProduto", data, {
+      await api.post("/api/produtos/addProduto", data, {
         headers: { "Content-Type": "multipart/form-data" },
       })
 

@@ -44,7 +44,7 @@ export default function Register() {
         formData.append("imagem", imagem);
       }
 
-      const res = await api.post("/colaborador/addColaborador", formData, {
+      const res = await api.post("/api/colaborador/addColaborador", formData, {
         headers: {
           "Content-Type": "multipart/form-data"
         }

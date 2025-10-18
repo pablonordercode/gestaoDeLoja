@@ -25,7 +25,7 @@ export default function Produto() {
   useEffect(() => {
     async function fetchProdutos() {
       try {
-        const res = await api.get("/produtos/todosProdutos")
+        const res = await api.get("/api/produtos/todosProdutos")
         setProdutos(res.data.data) // acessa o array dentro do "data"
       } catch (error) {
         console.error("Erro ao buscar produtos:", error)
@@ -75,7 +75,7 @@ export default function Produto() {
         data.append("imagem", formData.imagem)
       }
 
-      await api.put(`/produtos/editarProduto/${produtoEditando._id}`, data, {
+      await api.put(`/api/produtos/editarProduto/${produtoEditando._id}`, data, {
         headers: { "Content-Type": "multipart/form-data" }
       })
 
@@ -83,7 +83,7 @@ export default function Produto() {
       setMostrarEditarModal(false)
       
       // Recarregar lista de produtos
-      const res = await api.get("/produtos/todosProdutos")
+      const res = await api.get("/api/produtos/todosProdutos")
       setProdutos(res.data.data || [])
     } catch (error) {
       console.error("Erro ao editar produto:", error)
@@ -93,7 +93,7 @@ export default function Produto() {
 
   const carregarProdutos = async () => {
     try {
-      const res = await api.get("/produtos/todosProdutos")
+      const res = await api.get("/api/produtos/todosProdutos")
       setProdutos(res.data.data || [])
     } catch (error) {
       console.error("Erro ao carregar produtos:", error)

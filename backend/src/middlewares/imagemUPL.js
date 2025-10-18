@@ -1,14 +1,16 @@
 const multer = require("multer");
 const path = require("path");
 
-// Destino onde vai ser armazenada a imagem
+// Destino onde vai ser armazenada a imagem (caminho absoluto)
+const uploadPath = path.join(__dirname, '../../uploads');
+
 const imagemStorage = multer.diskStorage({
-    destination: (req,file,cb) => {
-        cb(null, "uploads/");
+    destination: (req, file, cb) => {
+        cb(null, uploadPath);
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + String(Math.floor(Math.random() * 100)) + path.extname(file.originalname));
-      },
+    },
 });
 const imageUpload = multer({
     storage: imagemStorage,

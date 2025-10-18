@@ -37,8 +37,8 @@ export default function Dashboard() {
   const carregarDados = async () => {
     try {
       const [produtosRes, vendasRes] = await Promise.all([
-        api.get("/produtos/todosProdutos"),
-        api.get("/vendas/todasVendas") // Assumindo que existe este endpoint
+        api.get("/api/produtos/todosProdutos"),
+        api.get("/api/vendas/todasVendas") // Assumindo que existe este endpoint
       ])
       
       setProdutos(produtosRes.data.data || [])
@@ -47,7 +47,7 @@ export default function Dashboard() {
       console.error("Erro ao carregar dados:", error)
       // Se não existir endpoint de vendas, carregar apenas produtos
       try {
-        const produtosRes = await api.get("/produtos/todosProdutos")
+        const produtosRes = await api.get("/api/produtos/todosProdutos")
         setProdutos(produtosRes.data.data || [])
       } catch (produtosError) {
         console.error("Erro ao carregar produtos:", produtosError)
@@ -154,7 +154,7 @@ export default function Dashboard() {
       const novaQuantidade = produtoSelecionado.quantidade - quantidadeVendida
       
       // Atualizar no backend
-      await api.put(`/produtos/editarProduto/${produtoId}`, {
+      await api.put(`/api/produtos/editarProduto/${produtoId}`, {
         quantidade: novaQuantidade
       })
       

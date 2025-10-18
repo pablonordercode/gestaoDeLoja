@@ -18,7 +18,7 @@ export default function Login() {
     setLoading(true)
 
     try {
-      const res = await api.post("/colaborador/login", {
+      const res = await api.post("/api/colaborador/login", {
         email,
         password,
       })
