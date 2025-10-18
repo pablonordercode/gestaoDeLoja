@@ -264,6 +264,33 @@ export default function Gestao() {
         )}
       </div>
 
+      {/* Atalhos de Gestão */}
+      <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 rounded-lg shadow-lg mb-6">
+        <h2 className="text-white text-lg font-bold mb-4">Ações Rápidas</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <button
+            onClick={() => navigate("/configuracao-loja")}
+            className="bg-white text-gray-800 p-4 rounded-lg shadow hover:shadow-lg transition flex items-center space-x-4"
+          >
+            <div className="text-4xl">⚙️</div>
+            <div className="text-left">
+              <h3 className="font-bold text-lg">Configurações da Loja</h3>
+              <p className="text-sm text-gray-600">Configure nome, CNPJ, endereço e logo</p>
+            </div>
+          </button>
+          <button
+            onClick={() => navigate("/registrar")}
+            className="bg-white text-gray-800 p-4 rounded-lg shadow hover:shadow-lg transition flex items-center space-x-4"
+          >
+            <div className="text-4xl">👤</div>
+            <div className="text-left">
+              <h3 className="font-bold text-lg">Cadastrar Colaborador</h3>
+              <p className="text-sm text-gray-600">Adicionar novo membro à equipe</p>
+            </div>
+          </button>
+        </div>
+      </div>
+
       {/* Estatísticas de Faturamento */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white p-4 rounded-lg shadow">

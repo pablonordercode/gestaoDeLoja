@@ -6,6 +6,7 @@ import Dashboard from "../pages/Dashboard"
 import Produto from "../pages/Produto"
 import CriarProduto from "../pages/CriarProduto"
 import Gestao from "../pages/Gestao"
+import ConfiguracaoLoja from "../pages/ConfiguracaoLoja"
 import Login from "../pages/Login"
 import RegistrarColaborador from "../pages/RegistrarColaborador"
 
@@ -51,6 +52,12 @@ export default function AppRoutes() {
           <Route path="/gestao" element={
             <ProtectedRoute>
               <Gestao />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/configuracao-loja" element={
+            <ProtectedRoute>
+              <ConfiguracaoLoja />
             </ProtectedRoute>
           } />
         </Routes>

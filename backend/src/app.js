@@ -4,6 +4,7 @@ const path = require("path");
 const { notFound, errorHandler } = require("./middlewares/errorHandler");
 const produtoRoute = require("./routes/produtoRout");
 const colaboradorRoute = require("./routes/colaboradorRout");
+const lojaRoute = require("./routes/lojaRout");
 
 require("dotenv").config();
 
@@ -28,6 +29,7 @@ app.get('/health', (req, res) => {
 // Rotas da API
 app.use("/api/produtos", produtoRoute);
 app.use("/api/colaborador", colaboradorRoute);
+app.use("/api/loja", lojaRoute);
 
 // Middlewares de erro (sempre no final)
 app.use(notFound);
